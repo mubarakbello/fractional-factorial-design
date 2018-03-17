@@ -1,8 +1,6 @@
 class FactorialFinder():
 	"""	docstring for FactorialFinder"""
 	def __init__(self, factors, generators, whole_plot=None, sub_plot=0):
-		self.__whole_plot_letters = "A B C D E F G H I J K L M N O".split(" ")
-		self.__sub_plot_letters = "p q r s t u v w x y z".split(" ")
 		self.factors = factors
 		self.generators = generators
 		if whole_plot == None:
@@ -10,13 +8,21 @@ class FactorialFinder():
 		else:
 			self.whole_plot = whole_plot
 		self.sub_plot = sub_plot
+		self.__initialize()
+
+	def __initialize(self):
+		self.__whole_plot_letters = "A B C D E F G H I J K L M N O".split(" ")
+		self.__sub_plot_letters = "p q r s t u v w x y z".split(" ")
 		self.wholes = self.__whole_plot_letters[0:self.whole_plot]
 		if self.sub_plot != 0:
 			self.subs = self.__sub_plot_letters[0:self.sub_plot]
-		else: self.subs = []
+		else:
+			self.subs = []
+		self.gens = self.subs
 		print("New sampling object created with:\nNumber of Factors(k) = {}\nNumber of Generators(p) = {}".format(self.factors, self.generators))
 		print("Number of Whole Plot [", *self.wholes, "] = {}".format(self.whole_plot), sep=' ')
 		print("Number of Sub Plot [" ,*self.subs, "] = {}".format(self.sub_plot), sep=' ')
+		print("Generators assigned as: [", *self.gens, "]", sep=' ')
 
 	def generateTable(self):
 		"""Method to generate table"""
