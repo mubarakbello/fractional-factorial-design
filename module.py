@@ -1,4 +1,4 @@
-from itertools import permutations as pm
+import copy
 from itertools import combinations as cb
 
 class FactorialDesign():
@@ -14,21 +14,13 @@ class FactorialDesign():
 		self.sub_plot_combinations = []
 		self.whole_plot_combinations_options = []
 		self.sub_plot_combinations_options = []
-		print("New Sampling object created.")
+		print("New Sampling object created.\n")
 		self.__initialize()
 
 	def __initialize(self):
 		# to be called once by __init__ and when values change
-		self.warnings = []
 		self.whole_plot_list = "A B C D E F G H I J K L M N O".split(" ")
 		self.sub_plot_list = "p q r s t u v w x y z".split(" ")
-		if self.generators >= self.factors/2:
-			# raise an exception here
-			self.warnings.append("Number of generators unnecessarily large.")
-		if self.whole_plot + self.sub_plot != self.factors:
-			# same thing here
-			self.whole_plot = self.factors - self.sub_plot # NEEDS TO BE CHECKED!!!!!!!!!!!!!!!
-			self.warnings.append("Sum of whole and sub plots is not equal to the number of factors.")
 		self.whole_plot_letters = self.whole_plot_list[0:self.whole_plot]
 		self.sub_plot_letters = self.sub_plot_list[0:self.sub_plot] if self.sub_plot != 0 else []
 		if self.sub_plot != 0:
@@ -54,11 +46,7 @@ class FactorialDesign():
 			"Sub plots = {}".format(self.sub_plot),
 			sep=' -- '
 		)
-		print("Generators assigned as: [", *self.generators_letters, "]", sep=' ')
-		if len(self.warnings) != 0:
-			print("WARNINGS:")
-			for warning in self.warnings:
-				print(warning)
+		print("\nGenerators assigned as: [", *self.generators_letters, "]", sep=' ')
 		self.generate()
 
 	def generate(self):
@@ -96,11 +84,17 @@ class FactorialDesign():
 			self.tableObject.append(bloated_signs)
 			self.matrixObject.append(bloated_rems)
 
-	def visualizeTable(self):
+	def visualizeDefaultTable(self):
 		print("", *self.factors_letters, sep='\t')
 		print("")
-		for row in self.tableObject:
-			print("", *row, sep='\t')
+		for row, i in zip(self.tableObject, range(len(self.tableObject))):
+			print(i+1, *row, sep='\t')
+
+	def visualizeTable(self, factors, table):
+		print("", *factors, sep='\t')
+		print("")
+		for row, i in zip(table, range(len(table))):
+			print(i+1, *row, sep='\t')
 
 	def visualizeMatrix(self):
 		print("")
@@ -131,19 +125,24 @@ class FactorialDesign():
 				print(*self.sub_plot_combinations_options, sep=' -- ')
 			print(" ")
 
-	def setRelations(self, id, values):
-		id_index = self.factors_letters.index(id)
-		self.factors_letters[id_index] += "=" + "".join(values)
-		index_list = []
-		table = self.tableObject.copy()
-		for i in values:
-			index_list.append(self.factors_letters.index(i))
-		for row in table:
-			somet = 1
-			for i in index_list:
-				somet *= 1 if row[i] == "+" else -1
-			row[id_index] = "+" if somet == 1 else "-"
-		self.visualizeTable()
+	def setRelations(self):
+		lists = []
+		for i in self.generators_letters:
+			lists.append((i, input(i + ": ")))
+		factors = copy.deepcopy(self.factors_letters)
+		table = copy.deepcopy(self.tableObject)
+		for ID, values in lists:
+			id_index = self.factors_letters.index(ID)
+			index_list = []
+			factors[id_index] += "=" + "".join(values)
+			for i in values:
+				index_list.append(factors.index(i))
+			for row in table:
+				some_value = 1
+				for i in index_list:
+					some_value *= 1 if row[i] == "+" else -1
+				row[id_index] = "+" if some_value == 1 else "-"
+		self.visualizeTable(factors=factors,table=table)
 
 
 class ErrorHandlers():

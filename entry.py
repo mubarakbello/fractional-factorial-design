@@ -31,13 +31,39 @@ def inSampleMode(prompt_msg):
 	global obj_dict
 	os.system("cls")
 	if prompt_msg not in obj_dict:
-		factors = int(input("Enter number of factors: "))
-		generators = int(input("Enter number of generators: "))
-		whole_plot = int(input("Enter number of whole plots: "))
-		sub_plot = int(input("Enter number of sub plots: "))
+		while True:
+			try:
+				factors = int(input("Enter number of factors: "))
+				break
+			except Exception as e:
+				print("Invalid input")
+		while True:
+			try:
+				generators = int(input("Enter number of generators: "))
+				break
+			except Exception as e:
+				print("Invalid input")
+		while True:
+			try:
+				whole_plot = int(input("Enter number of whole plots: "))
+				if whole_plot > factors: continue
+				else: break
+			except Exception as e:
+				print("Invalid input")
+		while True:
+			try:
+				sub_plot = int(input("Enter number of sub plots: "))
+				if sub_plot != factors - whole_plot:
+					print("Number of whole plots and sub plots doesn't add up.")
+					continue
+				else: break
+			except Exception as e:
+				print("Invalid input")
+		os.system("cls")
 		obj_dict[prompt_msg] = fd(factors, generators, whole_plot, sub_plot)
 	obj_handle = obj_dict[prompt_msg]
 	while True:
+		print("\n\n")
 		prompt = input(prompt_msg+">>")
 		if prompt == "back":
 			break
@@ -46,44 +72,25 @@ def inSampleMode(prompt_msg):
 		elif prompt.startswith("random"):
 			# randomize table to get varying values for each column
 			pass
-		elif prompt.startswith("factors"):
-			# set value of factors
-			obj_handle.factors = int(prompt.split("=")[-1])
-		elif prompt.startswith("generators"):
-			# set value of generators
-			obj_handle.generators = int(prompt.split("=")[-1])
-			print(obj_handle.generators)
-		elif prompt.startswith("whole"):
-			# set value of whole plots
-			obj_handle.whole_plot = int(prompt.split("=")[-1])
-		elif prompt.startswith("sub"):
-			# set value of sub plots
-			obj_handle.sub_plot = int(prompt.split("=")[-1])
 
 		#####################################################
 		# for setting varying values
-
 		elif prompt.startswith("set"):
 			parameter = prompt.split(" ")[1]
-			value = prompt.split(" ")[-1]
+			# value = prompt.split(" ")[-1]
 			if parameter.startswith("generators"):
 				# set obj_handle.generators to value
-				obj_handle.generators_letters = [i for i in value]
-				obj_handle.generators = len(value)
-				print(obj_handle.generators_letters)
-			elif parameter.startswith("whole"):
-				# set obj_handle.whole_plot to value
-				obj_handle.whole_plot_letters = [i for i in value]
-				obj_handle.whole_plot = len(value)
-			elif parameter.startswith("sub"):
-				# set obj_handle.sub_plot to value
-				obj_handle.sub_plot_letters = [i for i in value]
-				obj_handle.sub_plot = len(value)
+				pass
 			elif parameter.startswith("relation"):
 				# set all relations from options given to value
-				id = prompt.split(" ")[2]
-				values = [i for i in value]
-				obj_handle.setRelations(id, values)
+				obj_handle.setRelations()
+				# id = prompt.split(" ")[2]
+				# values = [i for i in value]
+				# obj_handle.setRelations(id, values)
+
+		#####################################################
+		# for showing tables, options, results
+
 		elif prompt.startswith("show"):
 			parameter = prompt.split(" ")[1]
 			if parameter.startswith("matrix"):
@@ -94,7 +101,7 @@ def inSampleMode(prompt_msg):
 				obj_handle.generateCombinations()
 			elif parameter.startswith("table"):
 				# print table
-				obj_handle.visualizeTable()
+				obj_handle.visualizeDefaultTable()
 			elif parameter.startswith("interaction"):
 				# set obj_handle.interaction to value
 				pass
