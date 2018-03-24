@@ -1,3 +1,6 @@
+import numpy as np
+from fractions import Fraction
+
 def getMatrixInverse(m):
 	determinant = getMatrixDeterminant(m)
 	# special case for 2x2 matrices
@@ -12,7 +15,6 @@ def getMatrixInverse(m):
 			cofactorRow.append(((-1)**(r+c)) * getMatrixDeterminant(minor))
 		cofactors.append(cofactorRow)
 	cofactors = transposeMatrix(cofactors)
-	print(type(cofactors))
 	for r in range(len(cofactors)):
 		for c in range(len(cofactors)):
 			cofactors[r][c] = cofactors[r][c]/determinant
@@ -38,7 +40,39 @@ def multiplyMatrix(a,b):
 	zip_b = list(zip_b)
 	return [[sum(ele_a*ele_b for ele_a, ele_b in zip(row_a, col_b)) for col_b in zip_b] for row_a in a]
 
-lk = [[1,0,0], [0,1,0], [0,0,1]]
-kj = [[3,7,6,9,8,3], [4,0,2,2,-7,-4], [-2,2,1,0,0,4]]
-print(getMatrixInverse(lk))
-print(multiplyMatrix(lk, kj))
+def addMatrix(c, d):
+	return [[a+b for a,b in zip(row1,row2)] for row1, row2 in zip(c,d)]
+
+# def swaprows(m, i, j):
+# 	if len(m.shape) == 1:
+# 		m[i],m[j] = m[j].m[i]
+# 	else:
+# 		temp = m[i].copy()
+# 		m[i] = m[j]
+# 		m[j] = temp
+
+# def _gauss_det(m, eps = 1.0/(10**10)):
+# 	m = np.array([[Fraction(int(x)) for x in row] for row in m])
+# 	subs = 0
+# 	(h, w) = (len(m), len(m[0]))
+# 	for y in range(0,h):
+# 		maxrow = y
+# 		for y2 in range(y+1, h):    # Find max pivot
+# 			if abs(m[y2][y]) > abs(m[maxrow][y]):
+# 				maxrow = y2
+# 		swaprows(m, y, maxrow)
+# 		subs += 1
+# 		if abs(m[y][y]) <= eps:     # Singular?
+# 			print(m[y][y])
+# 			return 0
+# 		for y2 in range(y+1, h):    # Eliminate column y
+# 			c = m[y2][y] / m[y][y]
+# 			m[y2][y:w] -= m[y][y:w]*c
+# 	prod = m.diagonal().prod()
+# 	if subs%2:
+# 		return prod
+# 	return -prod
+
+def _eig(m):
+	w = np.linalg.eigvals(np.array(m))
+	return w
